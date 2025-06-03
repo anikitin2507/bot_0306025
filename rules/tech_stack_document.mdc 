@@ -1,0 +1,9 @@
+(alwaysApply: true, globs: [”**/*”])
+
+Layer	Library / Service (version)	Purpose	Docs
+Runtime	Node.js 22.16.0 (LTS)	JavaScript runtime that executes the bot on Railway	https://nodejs.org/docs/latest-v22.x/api/
+Bot SDK	grammY 1.36.3	Framework to handle Telegram Bot API updates, including location & live-location events	https://grammy.dev/
+OpenAI SDK	openai 5.0.2	Official client to call GPT-4o-mini completions	https://github.com/openai/openai-node
+Database	— (no external DB)	MVP keeps session data in an in-memory Map; external persistence not required	—
+Deployment	Railway (Docker/Nixpacks)	Managed platform to build & run the Node container with env vars and cron-like tasks	https://docs.railway.app/
+Linter / Formatter	ESLint 9.27.0 + Prettier 3.5.3	Automatic code quality checks and consistent styling during development & CI	https://eslint.org/ · https://prettier.io/

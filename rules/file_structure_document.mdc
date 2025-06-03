@@ -1,0 +1,47 @@
+---
+
+description: "Target file structure"
+alwaysApply: true
+-----------------
+
+## 1. Папка → назначение
+
+| Папка                | Назначение                                         |
+| -------------------- | -------------------------------------------------- |
+| `/src`               | Исходный TypeScript‑код бота                       |
+| `/src/commands`      | Обработчики команд Telegram (`/start`, `/help`, …) |
+| `/src/handlers`      | Логика обработки событий location и live‑location  |
+| `/src/services`      | Интеграции: OpenAI, Telegram API wrappers          |
+| `/src/utils`         | Утилитарные функции, общие константы               |
+| `/config`            | Конфигурация окружений, шаблоны Prompt‑ов          |
+| `/scripts`           | CLI‑скрипты (setup, вспомогательные)               |
+| `/tests`             | Unit‑ и интеграционные тесты                       |
+| `/docs`              | Высокоуровневая документация, PRD, диаграммы       |
+| `/.github/workflows` | Конфигурации CI/CD в GitHub Actions                |
+| `/docker`            | Dockerfile и вспомогательные файлы контейнеризации |
+
+---
+
+## 2. Главные файлы
+
+* **`package.json`** — зависимости, npm‑скрипты.
+* **`tsconfig.json`** — конфигурация TypeScript‑компилятора.
+* **`.env.example`** — образец переменных окружения (`TELEGRAM_TOKEN`, `OPENAI_API_KEY`).
+* **`Dockerfile`** — сборка контейнера для Railway.
+* **`index.ts`** — точка входа приложения; инициализация бота и webhook.
+* **`README.md`** — пошаговые инструкции по запуску и деплою.
+
+---
+
+## 3. Генерируй новые файлы здесь
+
+Cursor может свободно добавлять и изменять файлы в следующих директориях:
+
+* `/src`
+
+  * `/src/commands`
+  * `/src/handlers`
+  * `/src/services`
+  * `/src/utils`
+* `/tests`
+* `/scripts`
