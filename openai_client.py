@@ -1,5 +1,6 @@
 import os
 import logging
+import sys
 from openai import OpenAI
 from openai import RateLimitError, APIError
 import asyncio
@@ -9,9 +10,18 @@ logger = logging.getLogger(__name__)
 
 class FactGenerator:
     def __init__(self):
-        self.client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+        api_key = os.getenv('OPENAI_API_KEY')
+        
+        if not api_key:
+            logger.error("❌ OPENAI_API_KEY environment variable is not set!")
+            logger.error("Please set OPENAI_API_KEY in your environment variables.")
+            sys.exit(1)
+        
+        self.client = OpenAI(api_key=api_key)
         self.last_request_time = 0
         self.min_request_interval = 1  # Minimum 1 second between requests
+        
+        logger.info("✅ OpenAI client initialized successfully")
     
     async def _rate_limit(self):
         """Simple rate limiting to avoid hitting OpenAI limits"""

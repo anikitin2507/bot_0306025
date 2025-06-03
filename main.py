@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import os
+import sys
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
@@ -18,8 +19,32 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Validate environment variables
+def validate_environment():
+    """Validate that all required environment variables are set"""
+    telegram_token = os.getenv('TELEGRAM_TOKEN')
+    openai_key = os.getenv('OPENAI_API_KEY')
+    
+    if not telegram_token:
+        logger.error("❌ TELEGRAM_TOKEN environment variable is not set!")
+        logger.error("Please set TELEGRAM_TOKEN in your environment variables.")
+        logger.error("In Railway: Go to your project → Variables tab → Add TELEGRAM_TOKEN")
+        sys.exit(1)
+    
+    if not openai_key:
+        logger.error("❌ OPENAI_API_KEY environment variable is not set!")
+        logger.error("Please set OPENAI_API_KEY in your environment variables.")
+        logger.error("In Railway: Go to your project → Variables tab → Add OPENAI_API_KEY")
+        sys.exit(1)
+    
+    logger.info("✅ Environment variables validated successfully")
+    return telegram_token, openai_key
+
+# Validate environment before initializing bot
+telegram_token, openai_key = validate_environment()
+
 # Initialize bot and dispatcher
-bot = Bot(token=os.getenv('TELEGRAM_TOKEN'))
+bot = Bot(token=telegram_token)
 dp = Dispatcher()
 
 # Initialize fact generator and live location manager
