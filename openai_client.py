@@ -1,10 +1,11 @@
 import os
 import logging
 import sys
-from openai import OpenAI
-from openai import RateLimitError, APIError
+import openai  # новый импорт
 import asyncio
 import time
+
+from openai import RateLimitError, APIError
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,7 @@ class FactGenerator:
             logger.error("Please set OPENAI_API_KEY in your environment variables.")
             sys.exit(1)
         
-        self.client = OpenAI(api_key=api_key)
+        openai.api_key = api_key  # задаём ключ глобально
         self.last_request_time = 0
         self.min_request_interval = 1  # Minimum 1 second between requests
         
@@ -43,20 +44,19 @@ class FactGenerator:
             
             logger.info(f"Requesting fact for coordinates: {latitude}, {longitude}")
             
-            response = self.client.chat.completions.create(
-                model="gpt-4-1106-preview",  # GPT-4.1-mini equivalent
+            response = openai.chat.completions.create(
+                model="gpt-4-1106-preview",
                 messages=[
                     {"role": "system", "content": "Ты знающий экскурсовод, который знает интересные факты о местах по всему миру. Отвечай кратко, но интересно."},
                     {"role": "user", "content": prompt}
                 ],
-                max_tokens=150,  # Reduced to save costs
+                max_tokens=150,
                 temperature=0.7,
-                timeout=30  # 30 second timeout
+                timeout=30
             )
             
             fact = response.choices[0].message.content.strip()
             
-            # Log token usage for monitoring
             if hasattr(response, 'usage'):
                 usage = response.usage
                 logger.info(f"OpenAI tokens used - Prompt: {usage.prompt_tokens}, Completion: {usage.completion_tokens}, Total: {usage.total_tokens}")
@@ -75,4 +75,4 @@ class FactGenerator:
             
         except Exception as e:
             logger.error(f"Unexpected error generating fact: {e}")
-            return "Извините, не удалось получить информацию об этом месте. Попробуйте отправить локацию ещё раз." 
+            return "Извините, не удалось получить информацию об этом месте. Попробуйте отправить локацию ещё раз."
