@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
 from aiogram.types import Message
-from openai_client import FactGenerator
+from ai_client import UnifiedFactGenerator
 from live_location_manager import LiveLocationManager
 
 # Load environment variables
@@ -24,6 +24,7 @@ def validate_environment():
     """Validate that all required environment variables are set"""
     telegram_token = os.getenv('TELEGRAM_TOKEN')
     openai_key = os.getenv('OPENAI_API_KEY')
+    openrouter_key = os.getenv('OPENROUTER_API_KEY')
     
     if not telegram_token:
         logger.error("❌ TELEGRAM_TOKEN environment variable is not set!")
@@ -31,24 +32,24 @@ def validate_environment():
         logger.error("In Railway: Go to your project → Variables tab → Add TELEGRAM_TOKEN")
         sys.exit(1)
     
-    if not openai_key:
-        logger.error("❌ OPENAI_API_KEY environment variable is not set!")
-        logger.error("Please set OPENAI_API_KEY in your environment variables.")
-        logger.error("In Railway: Go to your project → Variables tab → Add OPENAI_API_KEY")
+    if not openai_key and not openrouter_key:
+        logger.error("❌ Neither OPENAI_API_KEY nor OPENROUTER_API_KEY environment variable is set!")
+        logger.error("Please set at least one of these in your environment variables.")
+        logger.error("In Railway: Go to your project → Variables tab → Add OPENAI_API_KEY or OPENROUTER_API_KEY")
         sys.exit(1)
     
     logger.info("✅ Environment variables validated successfully")
-    return telegram_token, openai_key
+    return telegram_token
 
 # Validate environment before initializing bot
-telegram_token, openai_key = validate_environment()
+telegram_token = validate_environment()
 
 # Initialize bot and dispatcher
 bot = Bot(token=telegram_token)
 dp = Dispatcher()
 
 # Initialize fact generator and live location manager
-fact_generator = FactGenerator()
+fact_generator = UnifiedFactGenerator()
 live_location_manager = LiveLocationManager(fact_generator, bot)
 
 @dp.message(Command("start"))
